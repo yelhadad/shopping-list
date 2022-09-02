@@ -15,6 +15,9 @@ spec:
       containers:
         - name: shopping-app
           image: yelhadad/shopping
+          env:
+            - name: PYTHONUNBUFFERED
+              value: '0'
           ports:
             - name: flask
               containerPort: 5000

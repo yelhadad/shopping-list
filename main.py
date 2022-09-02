@@ -1,6 +1,10 @@
-from flask import Flask, request, make_response
+import sys
+
+from flask import Flask, request, make_response, jsonify
 import psycopg
 import db
+from res import res
+from auth import compare_passwords, hash_password, generate_jwt, decode_jwt
 
 app = Flask(__name__)
 
@@ -22,23 +26,24 @@ def sign_up():
     email = user['email']
     password = user['password']
     db.create_users_table()
-    db.check_if_user_exists(email)
-    db.create_user(email, password)
-
-
-    return 'dfgfnsdoigndgsion'
+    if db.check_if_user_exists(email):
+        return res({"err": 'user already exists'}, 400)
+    user = db.create_user(email, hash_password(password))
+    payload = {'id': user[0], 'email': user[1]}
+    jwt = generate_jwt(payload, 'key', 20)
+    return res({"message": 'user created'}, 201).set_cookie('jwt', jwt)
 
 @app.post('/api/auth/signin')
 def sign_in():
-    return "<p>did'nt signuped yet</p>"
+    return "<p>didn't signuped yet</p>"
 
 @app.post('/api/auth/signout')
 def sign_out():
-    return "<p>did'nt signuped yet</p>"
+    return "<p>didn't signuped yet</p>"
 
 @app.get('/api/auth/currentuser')
 def current_user():
-    return "<p>did'nt signuped yet</p>"
+    return "<p>didn't signuped yet</p>"
 
 @app.route("/")
 def hello_world():

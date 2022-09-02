@@ -15,12 +15,13 @@ def create_users_table():
     cur.execute("""
         CREATE TABLE IF NOT EXISTS users(
             id serial PRIMARY KEY,
-            email varchar (100) NOT NULL,
-            password varchar (100) NOT NULL)
+            email varchar (1000) NOT NULL,
+            password varchar (1000) NOT NULL)
     """)
     conn.commit()
     cur.close()
     conn.close()
+
 
 def create_user(email, password):
     with get_db_connection() as conn:
@@ -29,26 +30,31 @@ def create_user(email, password):
                             VALUES (%s, %s)""",
                         (email, password))
             conn.commit()
+            user = cur.fetchone()
+            return user[0], user[1]
+
 
 def get_user_by_id(id):
     with get_db_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT * FROM users WHERE id=%s", (id,) )
+            cur.execute("SELECT * FROM users WHERE id=%s", (id,))
         return cur.fetchone()
 
 def check_if_user_exists(email):
     with get_db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT * FROM users WHERE email=%s", (email,))
-            print(cur.fetchone(), file=sys.stdout)
-
+            if cur.fetchone() == None:
+                return False
+            else:
+                return True
 
 def q_create_users_table():
     return """
         CREATE TABLE IF NOT EXISTS users(
             id serial PRIMARY KEY,
-            email varchar (100) NOT NULL,
-            password varchar (100) NOT NULL)
+            email varchar (1000) NOT NULL,
+            password varchar (1000) NOT NULL)
     """
 def q_create_user(email, password):
     return ("""INSERT INTO users(email, password)
@@ -57,6 +63,7 @@ def q_create_user(email, password):
 
 def q_get_user_by_id(email):
     return """SELECT id FROM users"""
+
 
 
 
