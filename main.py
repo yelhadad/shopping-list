@@ -31,7 +31,10 @@ def sign_up():
     user = db.create_user(email, hash_password(password))
     payload = {'id': user[0], 'email': user[1]}
     jwt = generate_jwt(payload, 'key', 20)
-    return res({"message": 'user created'}, 201).set_cookie('jwt', jwt)
+    response = make_response(jsonify({'message': 'user created'}), 201)
+    response.set_cookie('jwt', jwt)
+    return response
+
 
 @app.post('/api/auth/signin')
 def sign_in():

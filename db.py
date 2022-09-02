@@ -30,6 +30,7 @@ def create_user(email, password):
                             VALUES (%s, %s)""",
                         (email, password))
             conn.commit()
+            cur.execute("SELECT * FROM users WHERE email=%s", (email,))
             user = cur.fetchone()
             return user[0], user[1]
 
