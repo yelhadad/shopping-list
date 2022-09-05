@@ -10,11 +10,14 @@ def Merge(dict1, dict2):
 
 def hash_password(password: str):
     salt = bcrypt.gensalt()
-    return bcrypt.hashpw(password.encode('utf-8'), salt)
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    print(hashed.decode())
+    return hashed.decode()
+
 
 
 def compare_passwords(password, hashed_password):
-    return bcrypt.checkpw(password, hashed_password)
+    return bcrypt.hashpw(password.encode('utf-8'), hashed_password) == hashed_password
 
 
 def generate_jwt(payload: dict, key, minuets):

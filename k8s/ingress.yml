@@ -17,3 +17,13 @@ spec:
                 name: shopping-srv
                 port:
                   number: 5000
+    - host: pgadmin.shopping.io
+      http:
+        paths:
+          - path: /?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: pgadmin-srv
+                port:
+                  number: 5050
