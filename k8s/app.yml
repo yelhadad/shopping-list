@@ -18,6 +18,13 @@ spec:
           env:
             - name: PYTHONUNBUFFERED
               value: '0'
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
           ports:
             - name: flask
               containerPort: 5000
