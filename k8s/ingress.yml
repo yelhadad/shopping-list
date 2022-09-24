@@ -10,13 +10,20 @@ spec:
     - host: dev.shopping.io
       http:
         paths:
-          - path: /?(.*)
+          - path: /api/?(.*)
             pathType: Prefix
             backend:
               service:
                 name: shopping-srv
                 port:
                   number: 5000
+          - path: /?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: client-srv
+                port:
+                  number: 3000
     - host: pgadmin.shopping.io
       http:
         paths:

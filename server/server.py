@@ -1,13 +1,9 @@
-import sys
-
-import bcrypt, time
+import time
 from flask import Flask, request, make_response, jsonify
-import psycopg
 
-import auth
 import db
 from res import res
-from auth import compare_passwords, hash_password, generate_jwt, decode_jwt
+from auth import hash_password, generate_jwt
 from bcrypt import checkpw
 from auth_middleware import token_required
 
@@ -75,16 +71,44 @@ def current_user(user_id, email):
 
 @app.get('/api/shopping/all')
 @token_required
-def get_shopping_list(user_id):
-    items = db.get_shopping_list_by_user_id(user_id)
+def get_shopping_list(user_id, email):
+    try:
+        items = db.get_shopping_list_by_user_id(user_id)
+    except Exception as e:
+        return make_response(jsonify({'error': 'something wrong happened'}), 500)
+    return {"message": "sucessfuly fetched data", 'data': items}, 200
 
 
 @app.post('/api/shopping/insert_one')
 @token_required
-def insert_one(user_id):
+def insert_one(user_id, email):
     requested_item = request.get_json()
-    db.insert_one_shopping(requested_item)
+    product = requested_item['product']
+    quantity = requested_item['quantity']
+    db.insert_one_shopping(user_id, product, quantity)
     return make_response(jsonify({'message:': 'item add successfuly'}), 200)
+
+
+@app.put('/api/shopping/change_item')
+@token_required
+def change_item(user_id, email):
+    item_to_change = request.get_json()
+    try:
+        db.change_one_shopping_product(item_to_change, user_id)
+    except Exception as e:
+        return {'error': e}, 500
+    return {'message': 'item changed sucessfuly'}, 201
+
+
+@app.delete('/api/shopping/delete_item')
+@token_required
+def delete_item(user_id, email):
+    item_id = request.get_json()['id']
+    try:
+        db.delete_item(item_id)
+    except Exception as e:
+        return {'error': e}, 500
+    return {"message": 'item deleted succesfuly!!'}, 202
 
 
 @app.route("/")

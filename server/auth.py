@@ -1,7 +1,7 @@
 import json
 
 import bcrypt, jwt, datetime
-from flask import jsonify
+
 
 def Merge(dict1, dict2):
     res = dict1 | dict2

@@ -1,6 +1,6 @@
 # connect to postgres, the port is provided by default
 # with keyword is for pretier syntax
-import psycopg, sys
+import psycopg
 
 
 def get_db_connection():
@@ -34,7 +34,7 @@ def create_shopping_table():
                     CREATE TABLE IF NOT EXISTS shopping(
                         id serial PRIMARY KEY,
                         product varchar (1000) NOT NULL,
-                        count varchar (1000) NOT NULL,
+                        quantity varchar (1000) NOT NULL,
                         user_id varchar (1000) NOT NULL)   
                         """)
             conn.commit()
@@ -55,14 +55,16 @@ def get_shopping_list_by_user_id(user_id):
 
 
 def insert_one_shopping(user_id, product, quantity):
+    print(product, quantity, user_id)
     with get_db_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO shopping(user_id, product, quantity)
-                            VALUES ({user_id}, '{product}', '{quantity}')"""
+            cur.execute("""INSERT INTO shopping(user_id, product, quantity)
+                            VALUES (%s, %s, %s)""", (user_id, product, quantity)
                         )
+            conn.commit()
 
 
-def change_one_shopping_product(item: dict):
+def change_one_shopping_product(item: dict, user_id):
     with get_db_connection() as conn:
         with conn.cursor() as cur:
             product = item['product']
@@ -71,18 +73,23 @@ def change_one_shopping_product(item: dict):
             if quantity is None:
                 cur.execute(f"""UPDATE shopping
                             SET product='{product}'
-                            WHERE id='{id}'""")
+                            WHERE id='{id} AND user_id='{user_id}''""")
             elif product is None:
                 cur.execute(f"""UPDATE shopping
                                 SET product='{quantity}'
-                                WHERE id='{id}'""")
+                                WHERE id='{id}' AND user_id='{user_id}'""")
             else:
                 cur.execute(f"""UPDATE shopping
                                 SET product='{product}', quantity='{quantity}'
-                                WHERE id='{id}'""")
+                                WHERE id='{id}' AND user_id='{user_id}'""")
             conn.commit()
 
 
+def delete_item(item_id):
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""DELETE FROM shopping WHERE id=%s""", item_id)
+            cur.commit()
 
 
 def create_user(email, password):
