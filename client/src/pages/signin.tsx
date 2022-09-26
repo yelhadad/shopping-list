@@ -17,7 +17,8 @@ export default function Signin() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const onSubmit = async () => {
+  const onSubmit = async (e: React.FormEvent<HTMLDivElement>) => {
+    e.preventDefault();
     try {
       await axios.post("/api/auth/signin", {
         email,

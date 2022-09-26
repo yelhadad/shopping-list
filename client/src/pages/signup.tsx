@@ -32,7 +32,8 @@ export default function Signin() {
     }
     return null;
   };
-  const onSubmit = async () => {
+  const onSubmit = async (e: React.FormEvent<HTMLDivElement>) => {
+    e.preventDefault();
     try {
       await axios.post("/api/auth/signup", {
         email,
