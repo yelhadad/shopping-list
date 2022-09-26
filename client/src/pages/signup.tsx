@@ -16,16 +16,32 @@ export default function Signin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [confermPassword, setConfermPassword] = useState<string>("");
 
+  const PasswordsAreMach = () => {
+    if (confermPassword !== "" || password !== "") {
+      if (password === confermPassword) {
+        return (
+          <Typography color="green">{"passwords are matched :)"}</Typography>
+        );
+      } else {
+        return (
+          <Typography color="red">{"passwords are not matched :("}</Typography>
+        );
+      }
+    }
+    return null;
+  };
   const onSubmit = async () => {
     try {
-      await axios.post("/api/auth/signin", {
+      await axios.post("/api/auth/signup", {
         email,
         password,
       });
       navigate("/shopping");
+      console.log("sucsses");
     } catch (error) {
-      alert("userName or password are not corrent");
+      console.log(error);
     }
   };
 
@@ -45,7 +61,7 @@ export default function Signin() {
             alignItems: "center",
           }}
         >
-          <Typography fontSize={20}>Sign In!</Typography>
+          <Typography fontSize={20}>Sign Up!</Typography>
           <TextField
             onChange={(e) => setEmail(e.target.value)}
             variant="standard"
@@ -61,6 +77,15 @@ export default function Signin() {
             type="password"
             value={password}
           />
+          <br />
+          <TextField
+            onChange={(e) => setConfermPassword(e.target.value)}
+            variant="standard"
+            label="conferm password"
+            type="password"
+            value={confermPassword}
+          />
+          <PasswordsAreMach />
           <br />
           <Button type="submit" color="primary">
             Submit

@@ -39,10 +39,12 @@ def sign_up():
 
 @app.post('/api/auth/signin')
 def sign_in():
-    user = request.get_json()
+    user = request.get_json() 
     email = user['email']
-    password = user['password']
-    # print(db.check_if_user_exists(email))
+    password = user['password'] 
+    print(db.check_if_user_exists) 
+    if not db.check_if_user_exists(email):
+        return {'error': 'user does not exists'}, 400
     fetched_user = db.get_user_by_email(email)
     fetched_password = fetched_user[2]
     fetched_id = fetched_user[0]
