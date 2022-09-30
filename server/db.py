@@ -1,14 +1,14 @@
 # connect to postgres, the port is provided by default
 # with keyword is for pretier syntax
-import psycopg
+import psycopg, os
 
-
+print(os.environ['DBNAME'])
 def get_db_connection():
     return psycopg.connect(
-            dbname  ='shopping',
-            host    ='postgres-srv',
-            user    ='admin',
-            password='mamram'
+            dbname  =os.environ['DBNAME'],
+            host    =os.environ['HOST'],
+            user    =os.environ['USER'],
+            password=os.environ['PASSWORD']
     )
 
 
@@ -50,7 +50,7 @@ def get_shopping_list():
 def get_shopping_list_by_user_id(user_id):
     with get_db_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(f"""SELECT * FROM shopping WHERE user_id ='{user_id}'""")
+            cur.execute(f"""SELECT id,product, quantity FROM shopping WHERE user_id ='{user_id}'""")
             return cur.fetchall()
 
 
@@ -84,12 +84,18 @@ def change_one_shopping_product(item: dict, user_id):
                                 WHERE id='{id}' AND user_id='{user_id}'""")
             conn.commit()
 
-
+#not working!!!!
 def delete_item(item_id):
     with get_db_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("""DELETE FROM shopping WHERE id=%s""", item_id)
-            cur.commit()
+            cur.execute("""Select * FROM shopping WHERE id=%s""", (item_id))
+            conn.commit()
+
+def delete_item_by_id(id):
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM shopping WHERE id=%s", (id,))
+            conn.commit()
 
 
 def create_user(email, password):

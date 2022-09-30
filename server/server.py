@@ -102,15 +102,13 @@ def change_item(user_id, email):
     return {'message': 'item changed sucessfuly'}, 201
 
 
-@app.delete('/api/shopping/delete_item')
+@app.post('/api/shopping/delete_item')
 @token_required
 def delete_item(user_id, email):
-    item_id = request.get_json()['id']
-    try:
-        db.delete_item(item_id)
-    except Exception as e:
-        return {'error': e}, 500
-    return {"message": 'item deleted succesfuly!!'}, 202
+    request_body = request.get_json()
+    item_id = request_body['id']
+    db.delete_item_by_id(item_id)
+    return make_response({"message": 'item deleted succesfuly!!'}, 202)
 
 
 @app.route("/")

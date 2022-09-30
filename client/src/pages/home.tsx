@@ -1,16 +1,7 @@
-import {
-  Card,
-  CardContent,
-  Container,
-  TextField,
-  Typography,
-} from "@mui/material";
+import React from "react";
 
-export default function Signin() {
-  return (
-    <Container>
-      <TextField variant="standard" label="email" type="email" />
-      <Typography>gkDFJGDKJDGKLJ</Typography>
-    </Container>
-  );
+function Home() {
+  return <h1>this is Home page</h1>;
 }
+
+export default Home;

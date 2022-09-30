@@ -17,7 +17,27 @@ spec:
           image: yelhadad/shopping
           env:
             - name: PYTHONUNBUFFERED
-              value: '0'
+              value: "0"
+            - name: DBNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: shopping-config-map
+                  key: DBNAME
+            - name: HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: shopping-config-map
+                  key: HOST
+            - name: USER
+              valueFrom:
+                configMapKeyRef:
+                  name: shopping-config-map
+                  key: USER
+            - name: PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: shopping-config-map
+                  key: PASSWORD
           resources:
             requests:
               memory: "128Mi"

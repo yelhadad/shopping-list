@@ -5,14 +5,15 @@ build:
     push: false
   artifacts:
     - image: yelhadad/shopping
-      context: ./server
+      context: server
       docker:
         dockerfile: Dockerfile
       sync:
-        infer:
-          - "**/*.py"
+        manual:
+          - src: "*/*.py"
+            dest: "."
     - image: yelhadad/shopping-client
-      context: ./client
+      context: client
       docker:
         dockerfile: Dockerfile
       sync:

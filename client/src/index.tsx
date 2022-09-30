@@ -11,27 +11,28 @@ import Signin from "./pages/signin";
 import Signup from "./pages/signup";
 import NotFound from "./pages/notFound";
 import axios from "axios";
+import ShoppingTest from "./pages/shopping-test";
 
 // fix ws error
 window.process = {} as any;
-export const CurrentUserContext = React.createContext("null");
+export const IsLoggedIn = React.createContext(false);
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
 });
 
 function ToggleColorMode() {
-  let user: any = "";
+  const [user, setUser] = React.useState(false);
   React.useEffect(() => {
     axios
       .get("/api/auth/currentuser")
       .then((res) => {
         console.log(res.data);
-        user = res.data;
+        setUser(true);
       })
       .catch((res) => {
         console.log("error function runs agian");
-        user = null;
+        setUser(false);
       });
     console.log(user);
   }, []);
@@ -59,10 +60,10 @@ function ToggleColorMode() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <CurrentUserContext.Provider value={user}>
+        <IsLoggedIn.Provider value={user}>
           <CssBaseline />
           <App />
-        </CurrentUserContext.Provider>
+        </IsLoggedIn.Provider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
@@ -78,6 +79,7 @@ export default function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/shopping" element={<Shopping />} />
+          <Route path="/shopping-test" element={<ShoppingTest />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
