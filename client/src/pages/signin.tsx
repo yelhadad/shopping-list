@@ -6,13 +6,15 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { CurrentUser } from "..";
 
 const Doamin = process.env.DOMAIN;
 
 export default function Signin() {
+  const { user, setUser } = useContext(CurrentUser);
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -25,6 +27,7 @@ export default function Signin() {
         password,
       });
       navigate("/shopping");
+      setUser({ email });
     } catch (error) {
       alert("userName or password are not corrent");
     }
@@ -63,7 +66,7 @@ export default function Signin() {
             value={password}
           />
           <br />
-          <Button type="submit" color="primary">
+          <Button type="submit" color="primary" variant="outlined">
             Submit
           </Button>
         </CardContent>

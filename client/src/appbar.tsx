@@ -8,20 +8,20 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import DarkModeIcon from "./darkModeIcon";
 import { useNavigate, redirect } from "react-router-dom";
-import { IsLoggedIn } from "./index";
+import { CurrentUser } from "./index";
 import axios from "axios";
 import { signout } from "./functions/signout";
 
 export default function ButtonAppBar() {
   const navigate = useNavigate();
-  const current_user = React.useContext(IsLoggedIn);
-  console.log(current_user);
+  const { user, setUser } = React.useContext(CurrentUser);
+  console.log(user);
 
   interface LoginButtonsProps {
-    current_user: boolean;
+    currentUser: any;
   }
-  const LoginButtons: React.FC<LoginButtonsProps> = ({ current_user }) => {
-    if (current_user === false) {
+  const LoginButtons: React.FC<LoginButtonsProps> = ({ currentUser }) => {
+    if (user === null) {
       return (
         <div>
           <Button color="inherit" onClick={() => navigate("/signup")}>
@@ -34,7 +34,13 @@ export default function ButtonAppBar() {
       );
     } else {
       return (
-        <Button color="inherit" onClick={() => signout(navigate)}>
+        <Button
+          color="inherit"
+          onClick={() => {
+            signout(navigate);
+            setUser(null);
+          }}
+        >
           Sign out
         </Button>
       );
@@ -55,9 +61,9 @@ export default function ButtonAppBar() {
           </IconButton>
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
+            Shopping App!
           </Typography>
-          <LoginButtons current_user={current_user} />
+          <LoginButtons currentUser={user} />
           <DarkModeIcon />
         </Toolbar>
       </AppBar>

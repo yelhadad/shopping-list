@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import ReactDOM from "react-dom/client";
 import Home from "./pages/home";
 import Layout from "./pages/layout";
@@ -15,14 +15,24 @@ import ShoppingTest from "./pages/shopping-test";
 
 // fix ws error
 window.process = {} as any;
-export const IsLoggedIn = React.createContext(false);
+interface CurrentUser {
+  user: {
+    email: string;
+  } | null;
+  setUser: any;
+}
+export const CurrentUser = React.createContext<CurrentUser>({
+  user: null,
+  setUser: () => {},
+});
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
 });
 
 function ToggleColorMode() {
-  const [user, setUser] = React.useState(false);
+  const [user, setUser] = React.useState<null | any>(null);
+  const value = React.useMemo(() => ({ user, setUser }), [user]);
   React.useEffect(() => {
     axios
       .get("/api/auth/currentuser")
@@ -60,10 +70,10 @@ function ToggleColorMode() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <IsLoggedIn.Provider value={user}>
-          <CssBaseline />
+        <CssBaseline />
+        <CurrentUser.Provider value={value}>
           <App />
-        </IsLoggedIn.Provider>
+        </CurrentUser.Provider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
